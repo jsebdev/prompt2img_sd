@@ -287,7 +287,9 @@ def main():
     sample_path = os.path.join(outpath, "samples")
     os.makedirs(sample_path, exist_ok=True)
     base_count = len(os.listdir(sample_path))
+    print('290: base_count >>>', base_count)
     grid_count = len(os.listdir(outpath)) - 1
+    print('292: grid_count >>>', grid_count)
 
     start_code = None
     if opt.fixed_code:
@@ -339,8 +341,9 @@ def main():
                                 img = Image.fromarray(
                                     x_sample.astype(np.uint8))
                                 img = put_watermark(img, wm_encoder)
-                                img.save(os.path.join(
-                                    sample_path, f"{base_count:05}.png"))
+                                img_path = os.path.join(sample_path, f"{base_count:05}.png")
+                                print('345: img_path >>>', img_path)
+                                img.save(img_path)
                                 base_count += 1
 
                         if not opt.skip_grid:
@@ -357,8 +360,9 @@ def main():
                         rearrange(grid, 'c h w -> h w c').cpu().numpy()
                     img = Image.fromarray(grid.astype(np.uint8))
                     img = put_watermark(img, wm_encoder)
-                    img.save(os.path.join(
-                        outpath, f'grid-{grid_count:04}.png'))
+                    grid_path = os.path.join(outpath, f'grid-{grid_count:04}.png')
+                    print('364: grid_path >>>', grid_path)
+                    img.save(grid_path)
                     grid_count += 1
 
                 toc = time.time()
