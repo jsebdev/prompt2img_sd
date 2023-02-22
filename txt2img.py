@@ -293,15 +293,13 @@ def main():
             data = list(chunk(data, batch_size))
 
     sample_id = opt.id
-    if id == "None":
+    if sample_id == "None":
         sample_id = str(uuid.uuid4())
     sample_path = os.path.join(outpath, sample_id)
     out_dict = {'out_path': sample_path, 'images': []}
     os.makedirs(sample_path, exist_ok=True)
     base_count = len(os.listdir(sample_path))
-    print('290: base_count >>>', base_count)
     grid_count = len(os.listdir(outpath)) - 1
-    print('292: grid_count >>>', grid_count)
 
     start_code = None
     if opt.fixed_code:
@@ -354,7 +352,6 @@ def main():
                                     x_sample.astype(np.uint8))
                                 img = put_watermark(img, wm_encoder)
                                 img_path = os.path.join(sample_path, f"{base_count:05}.png")
-                                print('345: img_path >>>', img_path)
                                 out_dict['images'].append(img_path)
                                 img.save(img_path)
                                 base_count += 1
@@ -374,17 +371,18 @@ def main():
                     img = Image.fromarray(grid.astype(np.uint8))
                     img = put_watermark(img, wm_encoder)
                     grid_path = os.path.join(sample_path, f'grid-{grid_count:04}.png')
-                    print('364: grid_path >>>', grid_path)
-                    out_dict['images'].append(img_path)
+                    out_dict['images'].append(grid_path)
                     img.save(grid_path)
                     grid_count += 1
 
                 toc = time.time()
 
     print(f"Your samples are ready and waiting for you here: \n{sample_path}")
-    print(json.dumps(out_dict))
-    with open(f"{outpath}/{sample_id}.json", "w") as outfile:
+    # print(json.dumps(out_dict))
+    out_file = f"{outpath}/{sample_id}.json"
+    with open(out_file, "w") as outfile:
         json.dump(out_dict, outfile)
+    print(out_file)
 
 
 
