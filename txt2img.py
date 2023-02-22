@@ -378,11 +378,11 @@ def main():
                 toc = time.time()
 
     print(f"Your samples are ready and waiting for you here: \n{sample_path}")
-    # print(json.dumps(out_dict))
     out_file = f"{outpath}/{sample_id}.json"
     with open(out_file, "w") as outfile:
         json.dump(out_dict, outfile)
     print(out_file)
+    print(json.dumps(out_dict))
 
 
 
