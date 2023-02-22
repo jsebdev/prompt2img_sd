@@ -16,6 +16,8 @@ import time
 from pytorch_lightning import seed_everything
 from torch import autocast
 from contextlib import contextmanager, nullcontext
+import uuid
+import json
 
 from ldm.util import instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
@@ -239,6 +241,12 @@ def main():
         choices=["full", "autocast"],
         default="autocast"
     )
+    parser.add_argument(
+        "--id",
+        type=str,
+        help="Unique identifier for prompt requests",
+        default="None"
+    )
     opt = parser.parse_args()
 
     if opt.laion400m:
@@ -284,7 +292,11 @@ def main():
             data = f.read().splitlines()
             data = list(chunk(data, batch_size))
 
-    sample_path = os.path.join(outpath, "samples")
+    sample_id = opt.id
+    if id == "None":
+        sample_id = str(uuid.uuid4())
+    sample_path = os.path.join(outpath, sample_id)
+    out_dict = {'out_path': sample_path, 'images': []}
     os.makedirs(sample_path, exist_ok=True)
     base_count = len(os.listdir(sample_path))
     print('290: base_count >>>', base_count)
@@ -343,6 +355,7 @@ def main():
                                 img = put_watermark(img, wm_encoder)
                                 img_path = os.path.join(sample_path, f"{base_count:05}.png")
                                 print('345: img_path >>>', img_path)
+                                out_dict['images'].append(img_path)
                                 img.save(img_path)
                                 base_count += 1
 
@@ -360,15 +373,19 @@ def main():
                         rearrange(grid, 'c h w -> h w c').cpu().numpy()
                     img = Image.fromarray(grid.astype(np.uint8))
                     img = put_watermark(img, wm_encoder)
-                    grid_path = os.path.join(outpath, f'grid-{grid_count:04}.png')
+                    grid_path = os.path.join(sample_path, f'grid-{grid_count:04}.png')
                     print('364: grid_path >>>', grid_path)
+                    out_dict['images'].append(img_path)
                     img.save(grid_path)
                     grid_count += 1
 
                 toc = time.time()
 
-    print(f"Your samples are ready and waiting for you here: \n{outpath} \n"
-          f" \nEnjoy.")
+    print(f"Your samples are ready and waiting for you here: \n{sample_path}")
+    print(json.dumps(out_dict))
+    with open(f"{outpath}/{sample_id}.json", "w") as outfile:
+        json.dump(out_dict, outfile)
+
 
 
 if __name__ == "__main__":
