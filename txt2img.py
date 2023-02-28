@@ -53,6 +53,7 @@ def numpy_to_pil(images):
 
 
 def load_model_from_config(config, ckpt, verbose=False):
+    """This function loads the model from the configuration file and the cktp file"""
     print(f"Loading model from {ckpt}")
     pl_sd = torch.load(ckpt, map_location="cpu")
     if "global_step" in pl_sd:
@@ -324,9 +325,11 @@ def main():
                     for prompts in tqdm(data, desc="data"):
                         uc = None
                         if negative_prompt:
-                            uc = model.get_learned_conditioning(batch_size * [negative_prompt])
+                            uc = model.get_learned_conditioning(
+                                batch_size * [negative_prompt])
                         elif opt.scale != 1.0:
-                            uc = model.get_learned_conditioning(batch_size * [""])
+                            uc = model.get_learned_conditioning(
+                                batch_size * [""])
                         if isinstance(prompts, tuple):
                             prompts = list(prompts)
                         c = model.get_learned_conditioning(prompts)
@@ -360,7 +363,8 @@ def main():
                                 img = Image.fromarray(
                                     x_sample.astype(np.uint8))
                                 img = put_watermark(img, wm_encoder)
-                                img_path = os.path.join(sample_path, f"{base_count:05}.png")
+                                img_path = os.path.join(
+                                    sample_path, f"{base_count:05}.png")
                                 out_dict['images'].append(img_path)
                                 img.save(img_path)
                                 base_count += 1
@@ -379,7 +383,8 @@ def main():
                         rearrange(grid, 'c h w -> h w c').cpu().numpy()
                     img = Image.fromarray(grid.astype(np.uint8))
                     img = put_watermark(img, wm_encoder)
-                    grid_path = os.path.join(sample_path, f'grid-{grid_count:04}.png')
+                    grid_path = os.path.join(
+                        sample_path, f'grid-{grid_count:04}.png')
                     out_dict['images'].append(grid_path)
                     img.save(grid_path)
                     grid_count += 1
@@ -392,7 +397,6 @@ def main():
         json.dump(out_dict, outfile)
     print(out_file)
     print(json.dumps(out_dict))
-
 
 
 if __name__ == "__main__":
