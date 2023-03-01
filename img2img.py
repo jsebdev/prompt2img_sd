@@ -28,6 +28,7 @@ def chunk(it, size):
     return iter(lambda: tuple(islice(it, size)), ())
 
 
+# config_path: configs/stable-diffusion/v1-inference.yaml
 def load_model_from_config(config, ckpt, verbose=False):
     """This function loads the model from the configuration file and the cktp file"""
     print(f"Loading model from {ckpt}")
@@ -175,7 +176,7 @@ def main():
     parser.add_argument(
         "--config",
         type=str,
-        default="prompt2img_sd/configs/stable-diffusion/v1-inference.yaml",
+        default="/home/ubuntu/mobgamestest/scripts/sd_generator/prompt2img_sd/configs/stable-diffusion/v1-inference.yaml",
         help="path to config which constructs model",
     )
     parser.add_argument(

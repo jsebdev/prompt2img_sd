@@ -220,7 +220,7 @@ def main():
     parser.add_argument(
         "--config",
         type=str,
-        default="prompt2img_sd/configs/stable-diffusion/v1-inference.yaml",
+        default="/home/ubuntu/mobgamestest/scripts/sd_generator/prompt2img_sd/configs/stable-diffusion/v1-inference.yaml",
         help="path to config which constructs model",
     )
     parser.add_argument(
