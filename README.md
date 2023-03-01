@@ -20,6 +20,7 @@ optional arguments:
   --prompt [PROMPT]     the prompt to render
   --negative_prompt [NEGATIVE PROMPT]
                         negative prompt to avoid render
+  --id [ID]             unique identifier for output
   --outdir [OUTDIR]     dir to write results to
   --skip_grid           do not save a grid, only individual samples. Helpful when evaluating lots of samples
   --skip_save           do not save individual samples. For speed measurements.
